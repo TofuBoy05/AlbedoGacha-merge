@@ -55,7 +55,6 @@ class gaclaim(commands.Cog):
         for user in users:
             if user not in duplicates:
                 username = await self.bot.fetch_user(user)
-                username = username[:-5]
                 user_data = database.child("boon").child("notes").child("users").child(user).get().val()
                 ltoken = user_data["ltoken"]
                 ltuid = user_data["ltuid"]
