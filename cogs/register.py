@@ -80,7 +80,7 @@ class register(commands.Cog):
 
     @commands.command()
     async def sync(self, ctx) -> None:
-        fmt = await ctx.bot.tree.sync(guild=ctx.guild)
+        fmt = await ctx.bot.tree.sync()
         await ctx.send(f'synced {len(fmt)} commands.')
 
     @app_commands.command(name="register", description="Register for autoclaim and live notes")
@@ -90,4 +90,4 @@ class register(commands.Cog):
         await interaction.response.send_message(content="", embed=embed, view=buttonRegister(), ephemeral=True)
             
 async def setup(bot):
-    await bot.add_cog(register(bot), guilds=[discord.Object(id=1007935142779703406)])
+    await bot.add_cog(register(bot))
