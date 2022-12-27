@@ -6,12 +6,12 @@ from dotenv import load_dotenv
 import logging
 
 load_dotenv()
-TOKEN = os.getenv('BETA')
+TOKEN = os.getenv('TOKEN')
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 
 intents = discord.Intents.all()
 intents.members = True
-bot = commands.Bot(command_prefix= "!", intents=intents, help_command=None, application_id='1007934486815723520') #production: 1007934486815723520 #dev: 1053527619724902461
+bot = commands.Bot(command_prefix= ".", intents=intents, help_command=None, application_id='1007934486815723520') #production: 1007934486815723520 #dev: 1053527619724902461
 
 async def load():
     for filename in os.listdir('./cogs'):
