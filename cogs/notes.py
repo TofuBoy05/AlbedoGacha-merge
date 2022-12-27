@@ -67,9 +67,7 @@ class notes(commands.Cog):
                 reply = await ctx.reply("Fetching data...")
                 notes = await gc.get_genshin_notes(uid)
 
-                current_time = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
-
-                resin_remaining_time = format_timespan(notes.remaining_resin_recovery_time - current_time)
+                resin_remaining_time = format_timespan(notes.remaining_resin_recovery_time, max_units=2)
                 
                 if resin_remaining_time == "0 seconds":
                     resin_remaining_time = "rip lol"
@@ -90,7 +88,8 @@ class notes(commands.Cog):
                 elif transformer_recovery_time == False:
                     transformer = "Couldn't fetch"
                 else:
-                    transformer = f"{format_timespan(transformer_recovery_time)}"
+                    current_time = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+                    transformer = f"{format_timespan(transformer_recovery_time - current_time, max_units=2)}"
 
                 try:
                     url = f"https://enka.shinshin.moe/u/{uid}/__data.json"
