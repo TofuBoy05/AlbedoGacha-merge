@@ -7,7 +7,6 @@ import logging
 
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
-TOKEN2 = os.getenv('TOKEN2')
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 
 intents = discord.Intents.all()

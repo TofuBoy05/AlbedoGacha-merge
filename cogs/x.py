@@ -1,6 +1,7 @@
 import os
 import discord
 from discord.ext import commands
+from discord import app_commands
 from dotenv import load_dotenv
 import pyrebase
 import random
@@ -54,6 +55,58 @@ status_claimed = {"status": "claimed",
                   "timestamp": f"{int(time.time()) + 1800}"}
 status_can_claim = {"status": "can_claim"}
 
+
+class buyPullModal(discord.ui.Modal, title="Buy Pulls"):
+    amount: int = discord.ui.TextInput(label = "How much?", placeholder="amount", style=discord.TextStyle.short)
+    async def on_submit(self, interaction: discord.Interaction):
+        try:
+            intamout = int(self.amount.value)
+            user_bal = database.child("users").child(interaction.user.id).child("currency").get().val()
+            if intamout != 0:
+                    if user_bal >= intamout*10:
+                        database.child("users").child(interaction.user.id).update({"currency": user_bal-(intamout*10)})
+                        current_pulls = database.child("users").child(interaction.user.id).child("pulls").child("amount").get().val()
+                        database.child("users").child(interaction.user.id).child("pulls").update({"amount": current_pulls+intamout})
+                        await interaction.response.send_message(f"added {intamout} pulls to your account.")
+        except Exception as e:
+            print(e)
+
+
+class buttonBuyPull(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=100)
+    
+    @discord.ui.button(label="Buy more Pulls", style=discord.ButtonStyle.green, emoji="🛒")
+    async def registerbutton(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_modal(buyPullModal())
+
+class buttonBuyClaim(discord.ui.View):
+    def __init__(self, author):
+        self.author = author
+        super().__init__(timeout=100)
+    
+    @discord.ui.button(label="Buy Claim", style=discord.ButtonStyle.green, emoji="💵")
+    async def registerbutton(self, interaction: discord.Interaction, button: discord.ui.Button):
+        try:
+
+            if interaction.user.id == self.author:
+
+                user_bal = database.child("users").child(interaction.user.id).child("currency").get().val()
+
+                if user_bal > 500 or user_bal == 500:
+                    new_bal = user_bal - 500
+                    await interaction.response.send_message(f"<@{interaction.user.id}> You can now claim. Your new balance is <:cecilia:1038333000905134141> {new_bal}")
+                    database.child("users").child(interaction.user.id).update({"claim_time": 1})
+                    database.child("users").child(interaction.user.id).update({"currency": new_bal})
+
+                elif user_bal < 500:
+                    await interaction.response.send_message(f"<@{interaction.user.id}> You don't have enough <:cecilia:1038333000905134141> to buy \"claim\"")
+            else:
+                await interaction.response.send_message(f"<@{interaction.user.id}> this is not yours!", ephemeral=True)
+        except Exception as e:
+            print(e)
+
+
 class gacha(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -72,7 +125,7 @@ class gacha(commands.Cog):
             elif user_pull_data['amount'] <= 0:
                 time_remaining = database.child('pull_refresh').child('unix').get().val()
                 time_remaining = time_remaining - int(time.time())
-                await ctx.reply(f"You have used up all your pulls! You will get {user_pull_data['speed']} pulls in {format_timespan(time_remaining)} seconds.")
+                await ctx.reply(f"You have used up all your pulls! You will get {user_pull_data['speed']} pulls in {format_timespan(time_remaining)} seconds.", view=buttonBuyPull())
                 return
         except:
             user_pull_data = {"amount": 4, "speed": 5, "max": 5}
@@ -210,10 +263,12 @@ class gacha(commands.Cog):
                         unix_difference = saved_unix - current_unix
                         converted = time.strftime(
                             "%Mm%Ss", time.gmtime(unix_difference))
-                        await ctx.reply(f"You have alread claimed a card. Try again in {converted}")
+                        await ctx.reply(f"You have alread claimed a card. Try again in {converted}", view=buttonBuyClaim(author=ctx.author.id))
 
             except asyncio.TimeoutError:
                 return
+            except Exception as e:
+                print(e)
 
 async def setup(bot):
     await bot.add_cog(gacha(bot))

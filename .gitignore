@@ -2,7 +2,6 @@ cards
 .env
 .vscode
 cogs/__pycache__
-buy.py
 g.py
 p.py
 cogs/initpull.py

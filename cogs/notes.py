@@ -137,7 +137,7 @@ class notes(commands.Cog):
 
                 
             elif not database.child("boon").child("notes").child("users").child(ctx.author.id).get().val():
-                await ctx.reply("Your Discord ID is not linked to a Boon notes account. Please register using /register")
+                await ctx.reply("Your Discord ID is not linked to a Boon notes account. Please register using </register:1056894402548736060>")
         except Exception as e:
             print(e)
             await ctx.reply(f"An error occured. Please ping tofu.\n`{e}`")
