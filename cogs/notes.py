@@ -67,7 +67,9 @@ class notes(commands.Cog):
                 reply = await ctx.reply("Fetching data...")
                 notes = await gc.get_genshin_notes(uid)
 
-                resin_remaining_time = format_timespan(notes.remaining_resin_recovery_time)
+                current_time = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+
+                resin_remaining_time = format_timespan(notes.remaining_resin_recovery_time - current_time)
                 
                 if resin_remaining_time == "0 seconds":
                     resin_remaining_time = "rip lol"
