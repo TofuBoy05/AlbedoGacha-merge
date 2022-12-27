@@ -70,8 +70,8 @@ class buttonRegister(discord.ui.View):
         await interaction.response.send_message(embed=embed2, ephemeral=True)
 
     @discord.ui.button(label="Mobile Script", style=discord.ButtonStyle.gray, emoji="📱")
-    async def scriptbutton(self, interaction: discord.Interaction, button: discord.ui.Button):
-        embed2 = discord.Embed(description="```js\nscript:check = document.cookie.includes('account_id') && document.cookie.includes('cookie_token') || alert('Please logout and log back in before trying again, cookie expired.'); a=document.cookie.match(/(ltoken)=(.*?);/gm); b=document.cookie.match(/(ltuid)=(.*?);/gm); c=document.cookie.match(/(cookie_token)=(.*?);/gm); check && document.write(`<br><br><button onclick=\"navigator.clipboard.writeText('${a}')\">Copy ltoken</button><br><br><button onclick=\"navigator.clipboard.writeText('${b}'); \">Copy ltuid</button><br><br><button onclick=\"navigator.clipboard.writeText('${c}')\">Copy cookie_token</button>`)```")
+    async def scriptbuttonmobile(self, interaction: discord.Interaction, button: discord.ui.Button):
+        embed2 = discord.Embed(description="script:check = document.cookie.includes('account_id') && document.cookie.includes('cookie_token') || alert('Please logout and log back in before trying again, cookie expired.'); a=document.cookie.match(/(ltoken)=(.*?);/gm); b=document.cookie.match(/(ltuid)=(.*?);/gm); c=document.cookie.match(/(cookie_token)=(.*?);/gm); check && document.write(`<br><br><button onclick=\"navigator.clipboard.writeText('${a}')\">Copy ltoken</button><br><br><button onclick=\"navigator.clipboard.writeText('${b}'); \">Copy ltuid</button><br><br><button onclick=\"navigator.clipboard.writeText('${c}')\">Copy cookie_token</button>`)")
         await interaction.response.send_message(embed=embed2, ephemeral=True)
     
 
