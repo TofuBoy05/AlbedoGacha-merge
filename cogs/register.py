@@ -85,8 +85,11 @@ class register(commands.Cog):
 
     @commands.command()
     async def sync(self, ctx) -> None:
-        fmt = await ctx.bot.tree.sync()
-        await ctx.send(f'synced {len(fmt)} commands.')
+        try:
+            fmt = await ctx.bot.tree.sync()
+            await ctx.send(f'synced {len(fmt)} commands.')
+        except Exception as e:
+            print(e)
 
     @app_commands.command(name="register", description="Register for autoclaim and live notes")
     async def register(self, interaction: discord.Interaction):

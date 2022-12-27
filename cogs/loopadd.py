@@ -76,8 +76,6 @@ class pulladd(commands.Cog):
 
 
             print("************")
-            
-            time.sleep(1)
         
 
     @loopadd.before_loop
