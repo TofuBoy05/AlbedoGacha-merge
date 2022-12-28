@@ -82,7 +82,7 @@ class notesContext(commands.Cog):
             try:
                 current_time = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
             except:
-                await ctx.reply("Something went wrong with calculating `current_time`. Please try again later.")
+                await interaction.followup.send("Something wen't wrong with calculating time. Please try again.")
                 return
 
             if transformer_recovery_time == current_time:
