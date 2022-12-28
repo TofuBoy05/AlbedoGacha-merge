@@ -73,6 +73,10 @@ class buttonRegister(discord.ui.View):
     async def scriptbuttonmobile(self, interaction: discord.Interaction, button: discord.ui.Button):
         embed2 = discord.Embed(description="script:check = document.cookie.includes('account_id') && document.cookie.includes('cookie_token') || alert('Please logout and log back in before trying again, cookie expired.'); a=document.cookie.match(/(ltoken)=(.*?);/gm); b=document.cookie.match(/(ltuid)=(.*?);/gm); c=document.cookie.match(/(cookie_token)=(.*?);/gm); check && document.write(`<br><br><button onclick=\"navigator.clipboard.writeText('${a}')\">Copy ltoken</button><br><br><button onclick=\"navigator.clipboard.writeText('${b}'); \">Copy ltuid</button><br><br><button onclick=\"navigator.clipboard.writeText('${c}')\">Copy cookie_token</button>`)")
         await interaction.response.send_message(embed=embed2, ephemeral=True)
+
+    @discord.ui.button(label="Video Tutorial", style=discord.ButtonStyle.gray, emoji="🎥")
+    async def video(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_message("https://media.discordapp.net/attachments/1038687174654173184/1056956420601434142/Screen_Recording_20221226-232300_Discord.mp4", ephemeral=True)
     
 
 class register(commands.Cog):
