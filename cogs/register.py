@@ -105,7 +105,7 @@ class register(commands.Cog):
 
     @app_commands.command(name="register", description="Register for autoclaim and live notes")
     async def register(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="BoonBot Genshin HoYoLAB Registration", description="**1.** Go to HoYoLAB's website and log in.\n**2.** Type `java` on the url bar and then paste the script from below.\n **3.** Click the Register button in this message.\n**4.** One by one, copy and paste each field.", color=5793266)
+        embed = discord.Embed(title="BoonBot Genshin HoYoLAB Registration", description="**1.** Go to HoYoLAB's website and log in.\n**2.** Type `java` on the url bar and then paste the script from below.\n **3.** Click the Register button in this message.\n**4.** One by one, copy and paste each field.", color=3092790)
         
         await interaction.response.send_message(content="", embed=embed, view=buttonRegister(), ephemeral=True)
             
