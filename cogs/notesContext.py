@@ -135,6 +135,7 @@ class notesContext(commands.Cog):
 
 
         except Exception as e:
+            await interaction.followup.send("This user is not registered.", ephemeral=True)
             print(e)
         
             
