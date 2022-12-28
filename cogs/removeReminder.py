@@ -66,6 +66,9 @@ class removeReminderCommand(commands.Cog):
         if database.child("boon").child("notes").child("users").child(interaction.user.id).get().val():
             data = {"show_note_buttons": False}
             database.child("boon").child("notes").child("users").child(interaction.user.id).child("settings").update(data)
+            await interaction.response.send_message(content="Buttons will now be hidden for your live notes.")
+        else:
+            await interaction.response.send_message(content="You are not registered. Please register using </register:1056894402548736060>")
 
     @app_commands.command(name="showbuttons", description="Shows live notes buttons")
     async def showButtons(self, interaction: discord.Interaction):
@@ -73,6 +76,9 @@ class removeReminderCommand(commands.Cog):
         if database.child("boon").child("notes").child("users").child(interaction.user.id).get().val():
             data = {"show_note_buttons": True}
             database.child("boon").child("notes").child("users").child(interaction.user.id).child("settings").update(data)
+            await interaction.response.send_message(content="Buttons will now appear on your live notes again!")
+        else:
+            await interaction.response.send_message(content="You are not registered. Please register using </register:1056894402548736060>")
     
             
 async def setup(bot):
