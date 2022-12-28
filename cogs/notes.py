@@ -79,7 +79,7 @@ class buttonRemind(discord.ui.View):
             human_time = format_timespan(num_seconds=self.time-600, max_units=2)
             data = {"time": added_time, "channel": interaction.channel.id}
             database.child("boon").child("notes").child("reminders").child(interaction.user.id).update(data)
-            await interaction.response.send_message(f"Okay, I'll remind you in {human_time}!")
+            await interaction.response.send_message(f"Okay, I'll check your resin in {human_time} and tell you if it's almost capped! You can still use you resin, and I'll readjust my timer accordingly~")
             
             
 
@@ -111,6 +111,7 @@ class notes(commands.Cog):
                 
                 reply = await ctx.reply("Fetching data...")
                 notes = await gc.get_genshin_notes(uid)
+                print(notes)
 
                 resin_remaining_time = format_timespan(notes.remaining_resin_recovery_time, max_units=2)
                 

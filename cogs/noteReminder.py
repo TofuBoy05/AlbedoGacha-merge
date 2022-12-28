@@ -6,6 +6,8 @@ load_dotenv()
 import pyrebase
 TOKEN = os.getenv('TOKEN')
 import time
+import genshin
+from humanfriendly import format_timespan, parse_timespan
 
 service = {
     
@@ -54,15 +56,49 @@ class resinReminder(commands.Cog):
         all_reminders = database.child("boon").child("notes").child("reminders").shallow().get().val()
         if all_reminders:
             for reminder in all_reminders:
-                channel_id = database.child("boon").child("notes").child("reminders").child(reminder).child("channel").get().val()
-                channel = self.bot.get_channel(channel_id)
-                remind_time = database.child("boon").child("notes").child("reminders").child(reminder).child("time").get().val()
-                current_time = int(time.time())
+                try:
+                    channel_id = database.child("boon").child("notes").child("reminders").child(reminder).child("channel").get().val()
+                    channel = self.bot.get_channel(channel_id)
+                    remind_time = database.child("boon").child("notes").child("reminders").child(reminder).child("time").get().val()
+                    current_time = int(time.time())
 
-                if current_time >= remind_time:
-                    print("reminding and deleting!")
-                    await channel.send(f"<@{reminder}>! Resin reminder")
-                    database.child("boon").child("notes").child("reminders").child(reminder).remove()
+                    if current_time >= remind_time:
+                        #CHECK USER'S RESIN IF CAPPED
+                        user_data = database.child("boon").child("notes").child("users").child(reminder).get().val()
+
+                        ltoken = user_data["ltoken"]
+                        ltuid = user_data["ltuid"]
+                        uid = user_data["uid"]
+
+                        gc = genshin.Client(f"ltoken={ltoken}; ltuid={ltuid}")
+                        notes = await gc.get_genshin_notes(uid)
+                        current_resin = notes.current_resin
+                        max_resin = notes.max_resin
+                        uid_to_user = await self.bot.fetch_user(int(reminder))
+                        uid_to_user = str(uid_to_user)[:-5]
+                        unix_resin = notes.remaining_resin_recovery_time.seconds
+                        resin_remaining_time = format_timespan(unix_resin - 600, max_units=2)
+                        if current_resin >= 158:
+                            
+                            embed = discord.Embed(title=f"{uid_to_user}'s Resin Status", description=f"<:resin:950411358569136178> {current_resin}/{max_resin}", color=3092790)
+
+                            await channel.send(f"<@{reminder}>! Your resin is almost capped!", embed=embed)
+                            database.child("boon").child("notes").child("reminders").child(reminder).remove()
+                        elif current_resin < 158:
+                            embed = discord.Embed(title=f"Readjusting {uid_to_user}'s Reminder", description=f"{uid_to_user} asked to be reminded when their resin is almost capped, their resin should almost be capped now, but I checked again and it seems that they've used their resin again. Readjusting timer to check again in {resin_remaining_time}", color=3092790)
+                            await channel.send(embed=embed)
+                            new_time = current_time + unix_resin - 600
+                            time_data = {"time": new_time}
+                            database.child("boon").child("notes").child("reminders").child(reminder).update(time_data)
+                except Exception as e:
+                    embed = discord.Embed(title="Error: Resin Reminder", description="An error has occurred. TofuBoy has been notified.", color=3092790)
+                    error = discord.Embed(title="Error: Resin Reminder", description=f"Error message:\n```{e}```", color=3092790)
+                    await channel.send(embed)
+                    tofu = self.bot.get_user(int(459655669889630209))
+                    await tofu.send(embed=error)
+                    
+                        
+
 
         
 
