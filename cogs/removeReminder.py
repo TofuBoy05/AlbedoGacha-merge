@@ -41,48 +41,25 @@ firebase = pyrebase.initialize_app(config)
 database = firebase.database()
 
 
-    
-
-class removeReminderCommand(commands.Cog):
+class removeReminder(commands.GroupCog, name="cancel"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        super().__init__()
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print ('Register cog is online.')
+        print ('Sync cog is online.')
 
-    @app_commands.command(name="cancelreminder", description="Cancels resin reminder.")
-    async def removeReminder(self, interaction: discord.Interaction):
-        
+    @app_commands.command(name="reminder", description="Cancels your resin reminder.")
+    async def cancelReminder(self, interaction: discord.Interaction):
         if not database.child("boon").child("notes").child("reminders").child(interaction.user.id).get().val():
             await interaction.response.send_message("You do not have a resin reminder set.")
         else:
             await interaction.response.send_message("Successfully cancelled your resin reminder.")
             database.child("boon").child("notes").child("reminders").child(interaction.user.id).remove()
-
-    @app_commands.command(name="hidebuttons", description="Hides live notes buttons")
-    async def hideButtons(self, interaction: discord.Interaction):
-        
-        if database.child("boon").child("notes").child("users").child(interaction.user.id).get().val():
-            data = {"show_note_buttons": False}
-            database.child("boon").child("notes").child("users").child(interaction.user.id).child("settings").update(data)
-            await interaction.response.send_message(content="Buttons will now be hidden for your live notes.")
-        else:
-            await interaction.response.send_message(content="You are not registered. Please register using </register:1056894402548736060>")
-
-    @app_commands.command(name="showbuttons", description="Shows live notes buttons")
-    async def showButtons(self, interaction: discord.Interaction):
-        
-        if database.child("boon").child("notes").child("users").child(interaction.user.id).get().val():
-            data = {"show_note_buttons": True}
-            database.child("boon").child("notes").child("users").child(interaction.user.id).child("settings").update(data)
-            await interaction.response.send_message(content="Buttons will now appear on your live notes again!")
-        else:
-            await interaction.response.send_message(content="You are not registered. Please register using </register:1056894402548736060>")
-    
             
 async def setup(bot):
-    await bot.add_cog(removeReminderCommand(bot))
+    await bot.add_cog(removeReminder(bot))
 
 # async def setup(bot):
-#     await bot.add_cog(removeReminderCommand(bot), guilds=[discord.Object(id=980092176488886383)])
+#     await bot.add_cog(removeReminder(bot), guilds=[discord.Object(id=980092176488886383)])
