@@ -27,11 +27,11 @@ class ai(commands.Cog):
         if ctx.author.id == 1007934486815723520:
             return
 
-        elif ctx.content.startswith('v.'):
+        elif ctx.content.startswith('b.'):
             print("test")
             prompt_msg = str(ctx.content)[3:]
 
-        elif not ctx.content.startswith('v.'):
+        elif not ctx.content.startswith('b.'):
             return
 
         if prompt_msg ==None:
