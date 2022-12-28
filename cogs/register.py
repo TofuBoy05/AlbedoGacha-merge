@@ -91,6 +91,14 @@ class register(commands.Cog):
         except Exception as e:
             print(e)
 
+    @commands.command()
+    async def syncg(self, ctx) -> None:
+        try:
+            fmt = await ctx.bot.tree.sync(guild=ctx.guild)
+            await ctx.send(f'synced {len(fmt)} commands.')
+        except Exception as e:
+            print(e)
+
     @app_commands.command(name="register", description="Register for autoclaim and live notes")
     async def register(self, interaction: discord.Interaction):
         embed = discord.Embed(title="BoonBot Genshin HoYoLAB Registration", description="**1.** Go to HoYoLAB's website and log in.\n**2.** Type `java` on the url bar and then paste the script from below.\n **3.** Click the Register button in this message.\n**4.** One by one, copy and paste each field.", color=5793266)
@@ -99,3 +107,6 @@ class register(commands.Cog):
             
 async def setup(bot):
     await bot.add_cog(register(bot))
+
+# async def setup(bot):
+#     await bot.add_cog(register(bot), guilds=[discord.Object(id=980092176488886383)])

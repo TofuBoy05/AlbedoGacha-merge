@@ -59,6 +59,24 @@ class removeReminderCommand(commands.Cog):
         else:
             await interaction.response.send_message("Successfully cancelled your resin reminder.")
             database.child("boon").child("notes").child("reminders").child(interaction.user.id).remove()
+
+    @app_commands.command(name="hidebuttons", description="Hides live notes buttons")
+    async def hideButtons(self, interaction: discord.Interaction):
+        
+        if database.child("boon").child("notes").child("users").child(interaction.user.id).get().val():
+            data = {"show_note_buttons": False}
+            database.child("boon").child("notes").child("users").child(interaction.user.id).child("settings").update(data)
+
+    @app_commands.command(name="showbuttons", description="Shows live notes buttons")
+    async def showButtons(self, interaction: discord.Interaction):
+        
+        if database.child("boon").child("notes").child("users").child(interaction.user.id).get().val():
+            data = {"show_note_buttons": True}
+            database.child("boon").child("notes").child("users").child(interaction.user.id).child("settings").update(data)
+    
             
 async def setup(bot):
     await bot.add_cog(removeReminderCommand(bot))
+
+# async def setup(bot):
+#     await bot.add_cog(removeReminderCommand(bot), guilds=[discord.Object(id=980092176488886383)])
