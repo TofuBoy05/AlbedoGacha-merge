@@ -55,7 +55,7 @@ class ptInfo(commands.Cog):
             name='Play time info',
             callback=self.pt_info, # set the callback of the context menu to "my_cool_context_menu"
         )
-        self.bot.tree.add_command(self.pt_info_menu)
+        self.bot.tree.add_command(self.pt_info_menu, guilds=[discord.Object(id=991361510263767080)])
         
 
     async def pt_info(self, interaction: discord.Interaction, message: discord.Message):
@@ -73,4 +73,4 @@ class ptInfo(commands.Cog):
 #     await bot.add_cog(ptInfo(bot))
 
 async def setup(bot):
-    await bot.add_cog(ptInfo(bot), guilds=[discord.Object(id=980092176488886383)])
+    await bot.add_cog(ptInfo(bot), guilds=[discord.Object(id=991361510263767080)])
