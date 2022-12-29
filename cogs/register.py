@@ -90,16 +90,22 @@ class register(commands.Cog):
     @commands.command()
     async def sync(self, ctx) -> None:
         try:
-            fmt = await ctx.bot.tree.sync()
-            await ctx.send(f'synced {len(fmt)} commands.')
+            if ctx.author.id == 459655669889630209:
+                fmt = await ctx.bot.tree.sync()
+                await ctx.send(f'synced {len(fmt)} commands.')
+            else:
+                await ctx.reply("Only the bot owner can use this command.")
         except Exception as e:
             print(e)
 
     @commands.command()
     async def syncg(self, ctx) -> None:
         try:
-            fmt = await ctx.bot.tree.sync(guild=ctx.guild)
-            await ctx.send(f'synced {len(fmt)} commands.')
+            if ctx.author.id == 459655669889630209:
+                fmt = await ctx.bot.tree.sync(guild=ctx.guild)
+                await ctx.send(f'synced {len(fmt)} commands.')
+            else:
+                await ctx.reply("Only the bot owner can use this command.")
         except Exception as e:
             print(e)
 
