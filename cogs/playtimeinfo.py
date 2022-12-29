@@ -55,7 +55,7 @@ class ptInfo(commands.Cog):
             name='Play time info',
             callback=self.pt_info, # set the callback of the context menu to "my_cool_context_menu"
         )
-        self.bot.tree.add_command(self.notes_ctx_menu)
+        self.bot.tree.add_command(self.pt_info_menu)
         
 
     async def pt_info(self, interaction: discord.Interaction, message: discord.Message):
