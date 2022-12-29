@@ -57,7 +57,7 @@ class ptContext(commands.Cog):
             name='Play time today',
             callback=self.pt_context_action, # set the callback of the context menu to "my_cool_context_menu"
         )
-        self.bot.tree.add_command(self.pt_context, guilds=[discord.Object(id=980092176488886383)])
+        self.bot.tree.add_command(self.pt_context, guilds=[discord.Object(id=991361510263767080)])
         
 
     async def pt_context_action(self, interaction: discord.Interaction, message: discord.Message):
@@ -101,4 +101,4 @@ class ptContext(commands.Cog):
 #     await bot.add_cog(ptContext(bot))
 
 async def setup(bot):
-    await bot.add_cog(ptContext(bot), guilds=[discord.Object(id=980092176488886383)])
+    await bot.add_cog(ptContext(bot), guilds=[discord.Object(id=991361510263767080)])

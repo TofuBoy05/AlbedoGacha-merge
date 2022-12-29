@@ -57,7 +57,7 @@ class ptContextMonth(commands.Cog):
             name='Play time this month',
             callback=self.pt_context_month_action, # set the callback of the context menu to "my_cool_context_menu"
         )
-        self.bot.tree.add_command(self.pt_context_month, guilds=[discord.Object(id=980092176488886383)])
+        self.bot.tree.add_command(self.pt_context_month, guilds=[discord.Object(id=991361510263767080)])
         
 
     async def pt_context_month_action(self, interaction: discord.Interaction, message: discord.Message):
@@ -89,4 +89,4 @@ class ptContextMonth(commands.Cog):
 #     await bot.add_cog(ptContextMonth(bot))
 
 async def setup(bot):
-    await bot.add_cog(ptContextMonth(bot), guilds=[discord.Object(id=980092176488886383)])
+    await bot.add_cog(ptContextMonth(bot), guilds=[discord.Object(id=991361510263767080)])
