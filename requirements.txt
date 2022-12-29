@@ -5,3 +5,4 @@ python-dotenv
 humanfriendly
 requests
 genshin
+pytz
