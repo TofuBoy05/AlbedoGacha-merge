@@ -69,8 +69,8 @@ class ptInfo(commands.Cog):
         
             
 
-async def setup(bot):
-    await bot.add_cog(ptInfo(bot))
-
 # async def setup(bot):
-#     await bot.add_cog(notesContext(bot), guilds=[discord.Object(id=980092176488886383)])
+#     await bot.add_cog(ptInfo(bot))
+
+async def setup(bot):
+    await bot.add_cog(ptInfo(bot), guilds=[discord.Object(id=980092176488886383)])
