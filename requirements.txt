@@ -6,3 +6,4 @@ humanfriendly
 requests
 genshin
 pytz
+translate
