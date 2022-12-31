@@ -85,6 +85,7 @@ class playtimeStat(commands.GroupCog, name="playtime"):
                     await interaction.followup.send(embed=embed)
                 elif not durations:
                     embed = discord.Embed(title="Error", description=f"You have not played Genshin today.\n\nReminder: This only records your playtime if \"Genshin Impact\" is displayed on your Discord rich presence or **Playing** status. Unfortunately this only works properly if you play on pc.", color=3092790)
+                    embed.set_image(url="https://media.discordapp.net/attachments/1008333194271129600/1058764636519927808/image.png")
                     await interaction.followup.send(embed=embed)
             else:
                 embed = discord.Embed(title="Please set up a timezone", description=("Use /set timezone [GMT/UTC Offset]. Or you can use </playtime thismonth:1057666922587639858> or </playtime thisyear:1057666922587639858> if you don't want to set up a timezone."), color=3092790)
@@ -117,6 +118,7 @@ class playtimeStat(commands.GroupCog, name="playtime"):
                 await interaction.response.send_message(embed=embed)
             except:
                 embed = discord.Embed(title="Error", description="You have not played Genshin this month. Keep it up!\n\nReminder: This only records your playtime if \"Genshin Impact\" is displayed on your Discord rich presence or **Playing** status. Unfortunately this only works properly if you play on pc.", color=3092790)
+                embed.set_image(url="https://media.discordapp.net/attachments/1008333194271129600/1058764636519927808/image.png")
                 await interaction.response.send_message(embed=embed)
 
         except Exception as e:
@@ -187,6 +189,7 @@ class playtimeStat(commands.GroupCog, name="playtime"):
                 await interaction.response.send_message(embed=embed)
             except:
                 embed = discord.Embed(title="Error", description="You have not played Genshin this year. Keep it up!\n\nReminder: This only records your playtime if \"Genshin Impact\" is displayed on your Discord rich presence or **Playing** status. Unfortunately this only works properly if you play on pc.", color=3092790)
+                embed.set_image(url="https://media.discordapp.net/attachments/1008333194271129600/1058764636519927808/image.png")
                 await interaction.response.send_message(embed=embed)
 
         except Exception as e:

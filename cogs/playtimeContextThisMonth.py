@@ -77,7 +77,8 @@ class ptContextMonth(commands.Cog):
                 await interaction.followup.send(embed=embed)
             except Exception as e:
                 print(e)
-                embed = discord.Embed(title="Error", description=f"{message.author.name} has not played Genshin this month. Keep it up!", color=3092790)
+                embed = discord.Embed(title="Error", description=f"{message.author.name} has not played Genshin this month. Keep it up!\n\nReminder: This only records your playtime if \"Genshin Impact\" is displayed on your Discord rich presence or **Playing** status. Unfortunately this only works properly if you play on pc.", color=3092790)
+                embed.set_image(url="https://media.discordapp.net/attachments/1008333194271129600/1058764636519927808/image.png")
                 await interaction.followup.send(embed=embed)
 
         except Exception as e:
