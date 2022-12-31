@@ -25,7 +25,7 @@ class translateContext(commands.Cog):
             translation = translator.translate(message.content)
             embed = discord.Embed(title="Translation", description=f"{translation}\n\n**Original:**\n{message.content}", color=3092790)
             embed2 = discord.Embed(title = f"{interaction.user.name} used Translate", description=f"**In:** {interaction.guild.name}\n\n**Message by:** {message.author.name}\n\n**Message:**\n{message.content}\n\n**Translation:**\n{translation}", color=3092790)
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.response.send_message(embed=embed)
             channel = self.bot.get_channel(1008333194271129600)
             await channel.send(embed=embed2)
 
