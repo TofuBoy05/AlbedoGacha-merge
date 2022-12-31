@@ -62,21 +62,7 @@ class genshinTime(commands.Cog):
                     
                     duration = current_time - time_started
                     data = {"Started": time_started, "Ended": current_time, "Duration": duration}
-                    # try:
-                    #     year_data = database.child("boon").child("playtime").child(before.id).child(year).child("total").get().val()
-                    #     year_update = {"total": int(year_data) + duration}
-                    # except:
-                    #     year_update = {"total": duration}
-                    
-                    # try:
-                    #     month_data = database.child("boon").child("playtime").child(before.id).child(year).child(month).child("total").get().val()
-                    #     month_update = {"total":month_data + duration}
-                    # except:
-                    #     month_update = {"total": duration}
-
                     database.child("boon").child("playtime").child(before.id).child(year).child(month).child(time_started).update(data)
-                    # database.child("boon").child("playtime").child(before.id).child(year).update(year_update)
-                    # database.child("boon").child("playtime").child(before.id).child(year).child(month).update(month_update)
 
 
             except Exception as e:
