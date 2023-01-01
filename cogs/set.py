@@ -55,7 +55,7 @@ class Select(discord.ui.Select):
         options = option_list
         super().__init__(placeholder="Choose a timezone", max_values=1, min_values=1, options=options)
     async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f"Successfully set your timezone to f{self.values[0]}")
+        await interaction.response.send_message(f"Successfully set your timezone to {self.values[0]}")
         data = {"timezone": self.values[0]}
         database.child("boon").child("playtime").child(interaction.user.id).child("settings").update(data)
 
