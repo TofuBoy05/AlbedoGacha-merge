@@ -16,7 +16,7 @@ bot = commands.Bot(command_prefix= ".", intents=intents, help_command=None, appl
 
 async def load():
     for filename in os.listdir('./cogs'):
-        # if filename.endswith('translateContext.py') or filename.endswith('register.py'):
+        # if filename.endswith('define.py') or filename.endswith('register.py'):
         if filename.endswith('.py'):
             await bot.load_extension(f'cogs.{filename[:-3]}')
 
