@@ -43,7 +43,6 @@ database = firebase.database()
 
 genshinUIDs = []
 honkaiUIDs = []
-honkaiUID = []
 
 class SelectAccGen(discord.ui.Select):
     def __init__(self):
@@ -107,6 +106,8 @@ class registerModal(discord.ui.Modal, title="Registration"):
             await interaction.edit_original_response(content="", embed=embed, view=buttonRegister())
         
         try:
+            genshinUIDs.clear()
+            honkaiUIDs.clear()
             ltuid = int(self.ltuid.value[6:-1])
             ltoken = self.ltoken.value[7:-1]
             gc = genshin.Client(f"ltoken={ltoken}; ltuid={ltuid}")
