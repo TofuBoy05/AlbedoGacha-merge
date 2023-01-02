@@ -177,7 +177,7 @@ class register(commands.Cog):
         except Exception as e:
             print(e)
 
-    @app_commands.command(name="register2", description="Register for autoclaim and live notes")
+    @app_commands.command(name="register", description="Register for autoclaim and live notes")
     async def register(self, interaction: discord.Interaction):
         embed = discord.Embed(title="BoonBot Genshin HoYoLAB Registration", description="**1.** Go to HoYoLAB's website and log in.\n**2.** Type `java` on the url bar and then paste the script from below.\n **3.** Click the Register button in this message.\n**4.** One by one, copy and paste each field.", color=3092790)
         
