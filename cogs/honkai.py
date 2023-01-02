@@ -46,11 +46,17 @@ honkaiUIDs = []
 class SelectAcc(discord.ui.Select):
     def __init__(self):
         option_list = []
-        for uid in honkaiUIDs:
-            option_list.append(discord.SelectOption(label=f"{uid}"))
+        if honkaiUIDs:
+            for uid in honkaiUIDs:
+                option_list.append(discord.SelectOption(label=f"{uid}"))
+        elif not honkaiUIDs:
+            discord.SelectOption(label=f"You do not have a Honkai account.")
         options = option_list
         super().__init__(placeholder="Select a UID", max_values=1, min_values=1, options=options)
     async def callback(self, interaction: discord.Interaction):
+        if self.values[0] == "You do not have a Honkai account.":
+            await interaction.response.send_message("<@{interaction.user.id}> I already told you that you don't have a Honkai account, get help.")
+            return
         await interaction.response.send_message(f"Successfully set your Honkai UID to {self.values[0]}. You can now use </honkai:1059362301360230400>.")
         data = {"huid": int(self.values[0])}
         database.child("boon").child("notes").child("users").child(interaction.user.id).update(data)
