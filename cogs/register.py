@@ -182,9 +182,15 @@ class register(commands.Cog):
         embed = discord.Embed(title="BoonBot Genshin HoYoLAB Registration", description="**1.** Go to HoYoLAB's website and log in.\n**2.** Type `java` on the url bar and then paste the script from below.\n **3.** Click the Register button in this message.\n**4.** One by one, copy and paste each field.", color=3092790)
         
         await interaction.response.send_message(content="", embed=embed, view=buttonRegister(), ephemeral=True)
-            
-# async def setup(bot):
-#     await bot.add_cog(register(bot))
 
+    @app_commands.command(name="apology", description="Corn's apology letter")
+    async def apology(self, interaction: discord.Interaction):
+        embed = discord.Embed(color=3092790)
+        embed.set_image(url="https://media.discordapp.net/attachments/1008333194271129600/1059149324975616030/unknown-6.png")
+        await interaction.response.send_message(embed=embed)
+            
 async def setup(bot):
-    await bot.add_cog(register(bot), guilds=[discord.Object(id=980092176488886383)])
+    await bot.add_cog(register(bot))
+
+# async def setup(bot):
+#     await bot.add_cog(register(bot), guilds=[discord.Object(id=980092176488886383)])
