@@ -49,29 +49,30 @@ class gaclaim(commands.Cog):
         print("notes cog is online.")
 
     @commands.command()
-    async def gaclaim(self,ctx):
+    async def haclaim(self,ctx):
         users = database.child("boon").child("notes").child("users").shallow().get().val()
         duplicates = [756246647377232043, 810322903820271617]
         for user in users:
             if user not in duplicates:
-                username = await self.bot.fetch_user(user)
-                user_data = database.child("boon").child("notes").child("users").child(user).get().val()
-                ltoken = user_data["ltoken"]
-                ltuid = user_data["ltuid"]
-                uid = user_data["uid"]
-                gc = genshin.Client({"ltuid": ltuid, "ltoken": ltoken})
-                gc.default_game = genshin.Game.GENSHIN
-                try:
-                    reward = await gc.claim_daily_reward()
-                except genshin.AlreadyClaimed:
-                    await ctx.send(f"<:tick:772044532845772810> Daily reward already claimed for {username}")
-                except genshin.AuthkeyException as e:
-                    await ctx.send(f"<:cross:772100763659927632> Could not claim {username}'s account.\n`{e}`")
-                except Exception as e:
-                    await ctx.send(f"<:cross:772100763659927632> For {username}: `{e}`")
-                else:
-                    await ctx.send(f"<:tick:772044532845772810> Claimed {reward.amount}x {reward.name} for {username}")
-                asyncio.sleep(1)
+                if database.child("boon").child("notes").child("users").child(user).child("huid").get().val():
+                    username = await self.bot.fetch_user(user)
+                    user_data = database.child("boon").child("notes").child("users").child(user).get().val()
+                    ltoken = user_data["ltoken"]
+                    ltuid = user_data["ltuid"]
+                    huid = user_data["huid"]
+                    gc = genshin.Client({"ltuid": ltuid, "ltoken": ltoken})
+                    gc.default_game = genshin.Game.HONKAI
+                    try:
+                        reward = await gc.claim_daily_reward()
+                    except genshin.AlreadyClaimed:
+                        await ctx.send(f"<:tick:772044532845772810> Daily reward already claimed for {username}")
+                    except genshin.AuthkeyException as e:
+                        await ctx.send(f"<:cross:772100763659927632> Could not claim {username}'s account.\n`{e}`")
+                    except Exception as e:
+                        await ctx.send(f"<:cross:772100763659927632> For {username}: `{e}`")
+                    else:
+                        await ctx.send(f"<:tick:772044532845772810> Claimed {reward.amount}x {reward.name} for {username}")
+                    asyncio.sleep(1)
             
 async def setup(bot):
     await bot.add_cog(gaclaim(bot))
