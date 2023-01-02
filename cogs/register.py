@@ -6,6 +6,7 @@ load_dotenv()
 import pyrebase
 from discord import app_commands
 from discord.ext import commands
+import genshin
 
 TOKEN = os.getenv('TOKEN')
 
@@ -40,19 +41,86 @@ config = {
 firebase = pyrebase.initialize_app(config)
 database = firebase.database()
 
+genshinUIDs = []
+honkaiUIDs = []
+honkaiUID = []
+
+class SelectAccGen(discord.ui.Select):
+    def __init__(self):
+        option_list = []
+        if genshinUIDs:
+            for uid in genshinUIDs:
+                option_list.append(discord.SelectOption(label=f"{uid}"))
+        elif not genshinUIDs:
+            option_list.append(discord.SelectOption(label=f"You have no Genshin Accounts"))
+        options = option_list
+        super().__init__(placeholder="Select a Genshin UID", max_values=1, min_values=1, options=options)
+    async def callback(self, interaction: discord.Interaction):
+        if self.values[0] == "You have no Genshin Accounts":
+            await interaction.response.send_message("Stop trying bitch", ephemeral=True)
+            return
+        await interaction.response.send_message(f"Successfully set your Genshin UID to {self.values[0]}. Your Daily check-in for Genshin will be automatically be claimed, and you can check your resin amount using `.n`", ephemeral=True)
+        data = {"uid": int(self.values[0])}
+        database.child("boon").child("notes").child("users").child(interaction.user.id).update(data)
+
+class SelectAccHon(discord.ui.Select):
+    def __init__(self):
+        option_list = []
+        if honkaiUIDs:
+            for uid in honkaiUIDs:
+                option_list.append(discord.SelectOption(label=f"{uid}"))
+        elif not honkaiUIDs:
+            option_list.append(discord.SelectOption(label="You have no Honkai Accounts"))
+        options = option_list
+        super().__init__(placeholder="Select a Honkai ID", max_values=1, min_values=1, options=options)
+    async def callback(self, interaction: discord.Interaction):
+        if self.values[0] == "You have no Honkai Accounts":
+            await interaction.response.send_message("Stop trying bitch", ephemeral=True)
+            return
+        await interaction.response.send_message(f"Successfully set your Honkai UID to {self.values[0]}. Your Daily check-in for Honkai will be automatically be claimed, and you can now use </honkai:1059362301360230400>.", ephemeral=True)
+        data = {"huid": int(self.values[0])}
+        database.child("boon").child("notes").child("users").child(interaction.user.id).update(data)
+
+class SelectAccGenView(discord.ui.View):
+    def __init__(self, *, timeout=100):
+        super().__init__(timeout=timeout)
+        self.add_item(SelectAccGen())
+        self.add_item(SelectAccHon())
+
 
 class registerModal(discord.ui.Modal, title="Registration"):
     ltoken = discord.ui.TextInput(label = "Paste ltoken here", placeholder="ltoken=XXXXXXX;", style=discord.TextStyle.short)
     ltuid = discord.ui.TextInput(label= "Paste ltuid here", placeholder= "ltuid=12345;", style= discord.TextStyle.short)
     cookie_token = discord.ui.TextInput(label= "Paste cookie_token here", placeholder= "cookie_token=XXXXXX;", style= discord.TextStyle.short)
-    uid = discord.ui.TextInput(label = "Your Genshin UID", placeholder= "812345678", style= discord.TextStyle.short)
     async def on_submit(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        await interaction.edit_original_response(content="Getting your game accounts...", embed=None, view=None)
         try:
-            data = {"ltoken": self.ltoken.value[7:-1], "ltuid": int(self.ltuid.value[6:-1]), "cookie_token": self.cookie_token.value[13:-1], "uid": int(self.uid.value)}
-            database.child("boon").child("notes").child("users").child(interaction.user.id).update(data)
+            if self.ltoken.value.startswith('ltoken=') and self.ltoken.value.endswith(";"):
+                data = {"ltoken": self.ltoken.value[7:-1], "ltuid": int(self.ltuid.value[6:-1]), "cookie_token": self.cookie_token.value[13:-1]}
+                database.child("boon").child("notes").child("users").child(interaction.user.id).update(data)
+            else:
+                embed = discord.Embed(title="Error", description="Error. Please make sure you put the correct information.")
+                await interaction.edit_original_response(content="", embed=embed, view=buttonRegister())
         except Exception as e:
-            await interaction.response.send_message(f"`{e}`")
-        await interaction.response.send_message(f"Registration complete. Please test a command to see if it's working!")
+            embed = discord.Embed(title="Error", description="Error. Please make sure you put the correct information.")
+            await interaction.edit_original_response(content="", embed=embed, view=buttonRegister())
+        
+        try:
+            ltuid = int(self.ltuid.value[6:-1])
+            ltoken = self.ltoken.value[7:-1]
+            gc = genshin.Client(f"ltoken={ltoken}; ltuid={ltuid}")
+            gameAccounts = await gc.get_game_accounts()
+            for accounts in gameAccounts:
+                if str(accounts.game_biz) == "bh3_global":
+                    honkaiUIDs.append(accounts.uid)
+                elif str(accounts.game_biz) == "hk4e_global":
+                    genshinUIDs.append(accounts.uid)
+            await interaction.edit_original_response(content=f"Please select Your UIDs. If you don't want to connect a game, just don't pick a UID bbg <333", view=SelectAccGenView())
+        except Exception as e:
+            embed = discord.Embed(title="Error", description="Error. Please make sure you put the correct information.")
+            await interaction.edit_original_response(content="", embed=embed, view=buttonRegister())
+        
 
 
 
@@ -109,14 +177,14 @@ class register(commands.Cog):
         except Exception as e:
             print(e)
 
-    @app_commands.command(name="register", description="Register for autoclaim and live notes")
+    @app_commands.command(name="register2", description="Register for autoclaim and live notes")
     async def register(self, interaction: discord.Interaction):
         embed = discord.Embed(title="BoonBot Genshin HoYoLAB Registration", description="**1.** Go to HoYoLAB's website and log in.\n**2.** Type `java` on the url bar and then paste the script from below.\n **3.** Click the Register button in this message.\n**4.** One by one, copy and paste each field.", color=3092790)
         
         await interaction.response.send_message(content="", embed=embed, view=buttonRegister(), ephemeral=True)
             
-async def setup(bot):
-    await bot.add_cog(register(bot))
-
 # async def setup(bot):
-#     await bot.add_cog(register(bot), guilds=[discord.Object(id=980092176488886383)])
+#     await bot.add_cog(register(bot))
+
+async def setup(bot):
+    await bot.add_cog(register(bot), guilds=[discord.Object(id=980092176488886383)])
