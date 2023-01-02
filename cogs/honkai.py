@@ -99,7 +99,7 @@ class honkaiChronicle(commands.Cog):
                 ltoken = user["ltoken"]
                 gc = genshin.Client(f"ltoken={ltoken}; ltuid={ltuid}")
                 gameAccounts = await gc.get_game_accounts()
-                
+                honkaiUIDs.clear()
                 for accounts in gameAccounts:
                     if str(accounts.game_biz) == "bh3_global":
                         honkaiUIDs.append(accounts.uid)
