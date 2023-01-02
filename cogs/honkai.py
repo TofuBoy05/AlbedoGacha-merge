@@ -84,12 +84,27 @@ class honkaiChronicle(commands.Cog):
                 gc = genshin.Client(f"ltoken={ltoken}; ltuid={ltuid}")
                 notes = await gc.get_honkai_user(huid)
                 embed = discord.Embed(title=f"{interaction.user.name}'s Honkai Battle Chronicles", color=interaction.user.color)
-                embed.add_field(name="Account", value=f"**Nickname:** {notes.info.nickname}\n**Server:** {notes.info.server}\n**Level:** {notes.info.level}\n**Days Active:** {notes.stats.active_days}\n**Achievements:** {notes.stats.achievements}\n<:blank:1036569081345757224>")
-                embed.add_field(name="Stats", value=f"**Battlesuts:** {notes.stats.battlesuits}\n**SSS Battlesuits:** {notes.stats.battlesuits_SSS}\n**Stigmata:** {notes.stats.stigmata}\n**5 Star Stigmatas:** {notes.stats.stigmata_5star}\n**Weapons:** {notes.stats.weapons}\n**5 Star Weapons:** {notes.stats.weapons_5star}\n**Outfits:** {notes.stats.outfits}\n<:blank:1036569081345757224>")
-                embed.add_field(name="Memorial Arena", value=f"**Ranking:** {notes.stats.memorial_arena.ranking}%\n**Rank:** {notes.stats.memorial_arena.raw_rank}\n**Score:** {notes.stats.memorial_arena.score}\n**Tier:** {notes.stats.memorial_arena.raw_tier}\n<:blank:1036569081345757224>")
-                embed.add_field(name="Abyss", value=f"**Q Singularis Rank:** {notes.stats.abyss.raw_q_singularis_rank}\n**Dirac Sea Rank:** {notes.stats.abyss.raw_dirac_sea_rank}\n**Score:** {notes.stats.abyss.score}\n**Tier:** {notes.stats.abyss.raw_tier}\n**Type:** {notes.stats.abyss.latest_type}\n<:blank:1036569081345757224>")
-                embed.add_field(name="Elysian Realm", value=f"**Highest Difficulty:** {notes.stats.elysian_realm.highest_difficulty}\n**Remembrance Sigils:** {notes.stats.elysian_realm.remembrance_sigils}\n**Highest Score:** {notes.stats.elysian_realm.highest_score}\n**Highest Floor:** {notes.stats.elysian_realm.highest_floor}\n<:blank:1036569081345757224>")
-                
+                try:
+                    embed.add_field(name="Account", value=f"**Nickname:** {notes.info.nickname}\n**Server:** {notes.info.server}\n**Level:** {notes.info.level}\n**Days Active:** {notes.stats.active_days}\n**Achievements:** {notes.stats.achievements}\n<:blank:1036569081345757224>")
+                except Exception as e:
+                    print(e)
+                try:
+                    embed.add_field(name="Stats", value=f"**Battlesuts:** {notes.stats.battlesuits}\n**SSS Battlesuits:** {notes.stats.battlesuits_SSS}\n**Stigmata:** {notes.stats.stigmata}\n**5 Star Stigmatas:** {notes.stats.stigmata_5star}\n**Weapons:** {notes.stats.weapons}\n**5 Star Weapons:** {notes.stats.weapons_5star}\n**Outfits:** {notes.stats.outfits}\n<:blank:1036569081345757224>")
+                except Exception as e:
+                    print(e)
+                try:
+                    embed.add_field(name="Memorial Arena", value=f"**Ranking:** {notes.stats.memorial_arena.ranking}%\n**Rank:** {notes.stats.memorial_arena.raw_rank}\n**Score:** {notes.stats.memorial_arena.score}\n**Tier:** {notes.stats.memorial_arena.raw_tier}\n<:blank:1036569081345757224>")
+                except Exception as e:
+                    print(e)
+                try:
+                    embed.add_field(name="Abyss", value=f"**Q Singularis Rank:** {notes.stats.abyss.raw_q_singularis_rank}\n**Dirac Sea Rank:** {notes.stats.abyss.raw_dirac_sea_rank}\n**Score:** {notes.stats.abyss.score}\n**Tier:** {notes.stats.abyss.raw_tier}\n**Type:** {notes.stats.abyss.latest_type}\n<:blank:1036569081345757224>")
+                except Exception as e:
+                    print(e)
+                try:
+                    embed.add_field(name="Elysian Realm", value=f"**Highest Difficulty:** {notes.stats.elysian_realm.highest_difficulty}\n**Remembrance Sigils:** {notes.stats.elysian_realm.remembrance_sigils}\n**Highest Score:** {notes.stats.elysian_realm.highest_score}\n**Highest Floor:** {notes.stats.elysian_realm.highest_floor}\n<:blank:1036569081345757224>")
+                except Exception as e:
+                    print(e)
+
                 embed.set_thumbnail(url=notes.info.icon)
                 await interaction.followup.send(embed=embed)
 
