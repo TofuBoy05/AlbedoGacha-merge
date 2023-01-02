@@ -43,8 +43,7 @@ config = {
 
 } 
 
-genshinUIDs = []
-honkaiUIDs = []
+
 
 firebase = pyrebase.initialize_app(config)
 database = firebase.database()
@@ -52,12 +51,13 @@ database = firebase.database()
 main_timezones_list = []
 
 class SelectAccGenEdit(discord.ui.Select):
-    def __init__(self):
+    def __init__(self, genshinUIDs):
+        self.genshinUIDs = genshinUIDs
         option_list = []
-        if genshinUIDs:
-            for uid in genshinUIDs:
+        if self.genshinUIDs:
+            for uid in self.genshinUIDs:
                 option_list.append(discord.SelectOption(label=f"{uid}"))
-        elif not genshinUIDs:
+        elif not self.genshinUIDs:
             option_list.append(discord.SelectOption(label=f"You have no Genshin Accounts"))
         options = option_list
         super().__init__(placeholder="Select a Genshin UID", max_values=1, min_values=1, options=options)
@@ -70,12 +70,13 @@ class SelectAccGenEdit(discord.ui.Select):
         database.child("boon").child("notes").child("users").child(interaction.user.id).update(data)
 
 class SelectAccHonEdit(discord.ui.Select):
-    def __init__(self):
+    def __init__(self, honkaiUIDs):
+        self.honkaiUIDs = honkaiUIDs
         option_list = []
-        if honkaiUIDs:
-            for uid in honkaiUIDs:
+        if self.honkaiUIDs:
+            for uid in self.honkaiUIDs:
                 option_list.append(discord.SelectOption(label=f"{uid}"))
-        elif not honkaiUIDs:
+        elif not self.honkaiUIDs:
             option_list.append(discord.SelectOption(label="You have no Honkai Accounts"))
         options = option_list
         super().__init__(placeholder="Select a Honkai ID", max_values=1, min_values=1, options=options)
@@ -88,14 +89,14 @@ class SelectAccHonEdit(discord.ui.Select):
         database.child("boon").child("notes").child("users").child(interaction.user.id).update(data)
 
 class SelectAccGenViewEdit(discord.ui.View):
-    def __init__(self, *, timeout=100):
+    def __init__(self, *, timeout=100, genshinUIDs):
         super().__init__(timeout=timeout)
-        self.add_item(SelectAccGenEdit())
+        self.add_item(SelectAccGenEdit(genshinUIDs))
 
 class SelectAccHonViewEdit(discord.ui.View):
-    def __init__(self, *, timeout=100):
+    def __init__(self, *, timeout=100, honkaiUIDs):
         super().__init__(timeout=timeout)
-        self.add_item(SelectAccHonEdit())
+        self.add_item(SelectAccHonEdit(honkaiUIDs))
 
 
 class Select(discord.ui.Select):
@@ -160,6 +161,7 @@ class setTZ(commands.GroupCog, name="set"):
 
     @app_commands.command(name="genshinuid", description="Change your selected Genshin UID.")
     async def setGenUID(self, interaction: discord.Interaction):
+        genshinUIDs = []
         await interaction.response.defer(ephemeral=True)
         try:
             if database.child("boon").child("notes").child("users").child(interaction.user.id).get().val():
@@ -171,13 +173,14 @@ class setTZ(commands.GroupCog, name="set"):
                 for accounts in gameAccounts:
                     if str(accounts.game_biz) == "hk4e_global":
                         genshinUIDs.append(accounts.uid)
-                await interaction.followup.send(view=SelectAccGenViewEdit())
+                await interaction.followup.send(view=SelectAccGenViewEdit(genshinUIDs = genshinUIDs))
         except Exception as e:
             print(e)
             await interaction.followup.send("Something went wrong idk")
 
     @app_commands.command(name="honkai3uid", description="Change your selected Honkai UID.")
     async def setHonUID(self, interaction: discord.Interaction):
+        honkaiUIDs = []
         await interaction.response.defer(ephemeral=True)
         try:
             if database.child("boon").child("notes").child("users").child(interaction.user.id).get().val():
@@ -189,7 +192,7 @@ class setTZ(commands.GroupCog, name="set"):
                 for accounts in gameAccounts:
                     if str(accounts.game_biz) == "bh3_global":
                         honkaiUIDs.append(accounts.uid)
-                await interaction.followup.send(view=SelectAccHonViewEdit())
+                await interaction.followup.send(view=SelectAccHonViewEdit(honkaiUIDs = honkaiUIDs))
         except Exception as e:
             print(e)
             await interaction.followup.send("Something went wrong. Please make sure you are registered.")
