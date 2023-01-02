@@ -40,7 +40,7 @@ config = {
 firebase = pyrebase.initialize_app(config)
 database = firebase.database()
 
-class gaclaim(commands.Cog):
+class haclaim(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
