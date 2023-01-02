@@ -75,4 +75,4 @@ class haclaim(commands.Cog):
                     asyncio.sleep(1)
             
 async def setup(bot):
-    await bot.add_cog(gaclaim(bot))
+    await bot.add_cog(haclaim(bot))
