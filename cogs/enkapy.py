@@ -8,6 +8,7 @@ from enkanetwork import EnkaNetworkAPI
 from enkanetwork.model.stats import Stats
 import asyncio
 from enkanetwork import Assets
+import sys
 
 load_dotenv()
 
@@ -77,34 +78,8 @@ class enkapy(commands.Cog):
     @commands.command()
     async def enkaIndex(self,ctx):
         async with enclnt:
-            # data = await enclnt.fetch_user_by_uid(813180074)
-            # character_list = []
-            # index = 0
-            # for character_raw in data.characters:
-                
-            #     # print(f"======={character_raw.name}=======")
-            #     character_list.append({"Name": character_raw.name,
-            #                             "Element": character_raw.element,
-            #                             "Icon": character_raw.image.icon.url,
-            #                             "Level": character_raw.level,
-            #                             "Index": index})
-                
-
-            #     for stat in character_raw.stats:
-            #         if stat[0] == 'FIGHT_PROP_CRITICAL':
-            #             crit_data = {'Crit': stat[1].to_percentage_symbol()}
-            #             character_list[index].update(crit_data)
-            #         if stat[0] == 'FIGHT_PROP_CRITICAL_HURT':
-            #             critDMG_data = {'CritDMG': stat[1].to_percentage_symbol()}
-            #             character_list[index].update(critDMG_data)
-            #             # print(f"- {stat[0]}: {stat[1].to_rounded() if isinstance(stat[1], Stats) else stat[1].to_percentage_symbol()}")
             
-            #     index += 1
-            # print(character_list)
-            
-            # embed = discord.Embed(title=f"{data.player.nickname}'s Profile", description=f"**{character_list[0]['Name']}**\n**Level:** {character_list[0]['Level']}\n<:critrate:1076738384560660520> {character_list[0]['Crit']}\n<:critdmg:1076738380206973020> {character_list[0]['CritDMG']}")
-            # embed.set_thumbnail(url=character_list[0]['Icon'])
-            # await ctx.reply(embed=embed, view=SelectCharacterView(character_list=character_list, nickname=data.player.nickname))
+            #### old_enkaIndex.py.old
 
             try:
                 users = database.child('boon').child('notes').child('users').get().val()
@@ -122,21 +97,80 @@ class enkapy(commands.Cog):
                             elif stat[0] == 'FIGHT_PROP_CRITICAL_HURT':
                                 critDMG_data = {'CritDMG': stat[1].to_percentage_symbol()}
                                 database.child('boon').child('characters').child(user).child(character_raw.name).update(critDMG_data)
-
+            
             except Exception as e:
-                print(e)
+                print(f"ERROR: {e}")
 
     @commands.command()
-    async def cvlb(self, ctx):
-        data = database.child('boon').child('characters').get().val()
-        print(data)
-        for users in data:
-            print(f'======={users}=======')
-            for character in data[users]:
-                print(character)
-                print(f"Crit Rate: {data[users][character]['Crit']}")
-                print(f"Crit DMG: {data[users][character]['CritDMG']}")
-                print(f"CV: {float(data[users][character]['Crit'][:-1])*2 + float(data[users][character]['CritDMG'][:-1])}")
+    async def enka(self,ctx):
+        async with enclnt:
+            try:
+                users = database.child('boon').child('notes').child('users').get().val()
+                for user in users:
+                    username = await self.bot.fetch_user(user)
+                    username = str(username)[:-5]
+                    user_data = {'username': username}
+                    uid = users[user]['uid']
+                    data = await enclnt.fetch_user_by_uid(uid)
+                    try:
+
+                        for character_raw in data.characters:
+                            for stat in character_raw.stats:
+                                if stat[0] == 'FIGHT_PROP_CRITICAL':
+                                    crit = stat[1].to_percentage_symbol()[:-1]
+                                elif stat[0] == 'FIGHT_PROP_CRITICAL_HURT':
+                                    critdmg = stat[1].to_percentage_symbol()[:-1]
+                            cvr = round(float(crit))*2 + round(float(critdmg))
+                            cv = float(crit)*2 + float(critdmg)
+                            record = {cvr: {
+                                'Name': character_raw.name,
+                                'Level': character_raw.level,
+                                'critdmg': critdmg,
+                                'crit': crit,
+                                'cv': round(cv, 2)
+                            }}
+                            user_data.update(record)
+                        
+                        database.child('boon').child('cvlb').child(user).update(user_data)
+                        # print(user_data)
+                    except Exception as e:
+                        print(f'Error in 1 {e}')
+                    
+            except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, fname, exc_tb.tb_lineno)
+
+
+    @commands.command()
+    async def cvlb(self, ctx, top = 5):
+        data = database.child('boon').child('cvlb').get().val()
+        lb_data = {}
+        for user in data:
+            cvs = list(data[user])
+            cvs.remove('username')
+            highest = cvs.pop()
+            # print(f"======={data[user]['username']}=======")
+            character = data[user][highest]
+            # print(character['Name'])
+            # print(character['cv'])
+            lb_data.update({user:{
+                            'cv': character['cv'],
+                            'character': character['Name'],
+                            'username': data[user]['username']}})
+
+        sorted_data = sorted(lb_data.items(), key=lambda x: int(x[1]['cv']), reverse=True)
+        message = ''
+        index = 1
+        for _ in sorted_data:
+            message += f"\n** #{index} {lb_data[_[0]]['username']}**\n({lb_data[_[0]]['cv']} - {lb_data[_[0]]['character']})\n"
+            index += 1
+            if index == top + 1:
+                break
+        embed = discord.Embed(title='Who has the highest CV?', description=f"{message}", color=3092790)
+        embed2 = discord.Embed(title='Note', description="\n\n**NOTE:** This is just a proof of concept. CVs are skewed because characters have different ascension stats and weapons, and it's not always about CV ^^\n\nCVs are tabulated once a day.\nDo `.cvlb <number>` to get a longer leaderboard.", color=3092790)
+        await ctx.reply(embed=embed)
+        await ctx.send(embed=embed2)
         
 async def setup(bot):
     await bot.add_cog(enkapy(bot))
