@@ -68,6 +68,9 @@ class ResinRemindSpec(commands.Cog):
     @commands.command()
     async def rr(self,ctx, resin):
         try:
+            if resin > 160:
+                await ctx.reply("pls get help the max is 160")
+                return
             resin = int(resin)
             resin_data = await ResinRemindSpec.get_resin(author=ctx.author.id)
             if resin <= resin_data["resin_now"]:
@@ -79,9 +82,10 @@ class ResinRemindSpec(commands.Cog):
                 seconds_left = time_left * 60
                 time_now = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
                 reminder_time = time_now + seconds_left
-                data = {"channel": ctx.channel.id,
+                data = {"channel": str(ctx.channel.id),
                         "time": reminder_time,
-                        "specific": True}
+                        "specific": True,
+                        "target": int(resin)}
 
                 if database.child("boon").child("notes").child("reminders").child(ctx.author.id).get().val():
                     embed = discord.Embed(description="You already have a reminder, please clear it with </cancel reminder:1059393572878680066>", color=3092790)

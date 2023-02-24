@@ -65,14 +65,15 @@ class pulladd(commands.Cog):
                 
                 if current_pulls + speed <= max_pulls:
                     database.child("users").child(user).child("pulls").update({"amount": current_pulls + speed})
-                    print("added because current pulls + speed is lesser or equal to maximum")
-                elif current_pulls >= max_pulls:
-                    print("do nothing because user has more pulls rn")
+                    # print("added because current pulls + speed is lesser or equal to maximum")
+                # elif current_pulls >= max_pulls:
+                    # print("do nothing because user has more pulls rn")
                 elif current_pulls < max_pulls and current_pulls + speed > max_pulls:
                     database.child("users").child(user).child("pulls").update({"amount": max_pulls})
-                    print("Adding speed will result in overflow, but not adding will leave user with incomplete inventory, so set the pull count to max instead.")
+                    # print("Adding speed will result in overflow, but not adding will leave user with incomplete inventory, so set the pull count to max instead.")
                 else:
-                    print("what")
+                    pass
+                    # print("what")
 
 
             print("************")
