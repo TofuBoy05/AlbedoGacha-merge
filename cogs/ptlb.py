@@ -44,7 +44,7 @@ firebase = pyrebase.initialize_app(config)
 database = firebase.database()
 
 
-class enkapy(commands.Cog):
+class ptlbClass(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -143,4 +143,4 @@ class enkapy(commands.Cog):
             await ctx.reply(f"ERROR: {e}")
         
 async def setup(bot):
-    await bot.add_cog(enkapy(bot))
+    await bot.add_cog(ptlbClass(bot))
