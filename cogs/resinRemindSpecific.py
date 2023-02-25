@@ -41,6 +41,16 @@ config = {
 firebase = pyrebase.initialize_app(config)
 database = firebase.database()
 
+class readjustBtn(discord.ui.View):
+    def __init__(self, user):
+        super().__init__(timeout=100)
+        self.user = user
+    @discord.ui.button(label="Do not readjust", style=discord.ButtonStyle.blurple)
+    async def readjust(self, interaction: discord.Interaction, button: discord.ui.Button):
+        embed = discord.Embed(color=3092790, title="Success", description="Reminder will be deleted quietly if resin is used.")
+        database.child('boon').child('notes').child('reminders').child(self.user).update({"adjust": False})
+        await interaction.response.edit_message(embed=embed, view=None)
+
 
 class ResinRemindSpec(commands.Cog):
     def __init__(self, bot):
@@ -68,7 +78,7 @@ class ResinRemindSpec(commands.Cog):
     @commands.command()
     async def rr(self,ctx, resin):
         try:
-            if resin > 160:
+            if int(resin) > 160:
                 await ctx.reply("pls get help the max is 160")
                 return
             resin = int(resin)
@@ -85,15 +95,16 @@ class ResinRemindSpec(commands.Cog):
                 data = {"channel": str(ctx.channel.id),
                         "time": reminder_time,
                         "specific": True,
-                        "target": int(resin)}
+                        "target": int(resin),
+                        "adjust": True}
 
                 if database.child("boon").child("notes").child("reminders").child(ctx.author.id).get().val():
                     embed = discord.Embed(description="You already have a reminder, please clear it with </cancel reminder:1059393572878680066>", color=3092790)
                     await ctx.reply(embed=embed)
                 else:
                     database.child("boon").child("notes").child("reminders").child(ctx.author.id).update(data)
-                    embed = discord.Embed(description=f"Okay, I will remind you in **{format_timespan(seconds_left)}**\nCurrent <:resin:950411358569136178>:  {resin_data['resin_now']}/{resin_data['max']}", color=3092790)
-                    await ctx.reply(embed=embed)
+                    embed = discord.Embed(description=f"Okay, I will remind you in **{format_timespan(seconds_left)}**\nCurrent <:resin:950411358569136178>:  {resin_data['resin_now']}/{resin_data['max']}\n\nTimer will readjust if you use your resin, if you want the timer to quietly delete itself if you use your resin, click the red button.", color=3092790)
+                    await ctx.reply(embed=embed, view=readjustBtn(user=ctx.author.id))
             
         except Exception as e:
             print(e)

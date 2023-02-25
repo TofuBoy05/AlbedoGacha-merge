@@ -94,6 +94,8 @@ class resinReminder(commands.Cog):
                                 time_data = {"time": new_time}
                                 database.child("boon").child("notes").child("reminders").child(reminder).update(time_data)
                         else:
+
+                            
                             ### CHECK RESIN ###
                             target_resin = data['target']
                             if current_resin < target_resin:
@@ -101,9 +103,9 @@ class resinReminder(commands.Cog):
                                 new_reminder = new_reminder * 8
                                 new_reminder = new_reminder * 60
                                 new_reminder_unix = new_reminder + current_time
-                                embed = discord.Embed(title=f"Readjusting {uid_to_user}'s Reminder", description=f"Target <:resin:950411358569136178>: {target_resin}/{max_resin}\nCurrent <:resin:950411358569136178>: {current_resin}/{max_resin}\nReminding in {format_timespan(new_reminder)}")
+                                embed = discord.Embed(color=3092790, title=f"Readjusting {uid_to_user}'s Reminder", description=f"Target <:resin:950411358569136178>: {target_resin}/{max_resin}\nCurrent <:resin:950411358569136178>: {current_resin}/{max_resin}\nReminding in {format_timespan(new_reminder)}")
                                 database.child("boon").child("notes").child("reminders").child(reminder).update({'time': new_reminder_unix})
-                                await channel.send(f"<{reminder}>! Resin alert", embed=embed)
+                                await channel.send(embed=embed)
                             if current_resin >= target_resin:
                                 embed = discord.Embed(title=f"{uid_to_user}'s Resin Status", description=f"<:resin:950411358569136178> {current_resin}/{max_resin}", color=3092790)
                                 await channel.send(f"<@{reminder}>! Resin alert", embed=embed)
