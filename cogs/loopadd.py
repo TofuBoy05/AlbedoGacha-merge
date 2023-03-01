@@ -52,9 +52,9 @@ class pulladd(commands.Cog):
         print("looping")
         database.child("pull_refresh").child("unix").set(int(time.time()) + 600)
         all_users = database.child("users").shallow().get().val()
-        print(all_users)
+        # print(all_users)
         for user in all_users:
-            print(user)
+            # print(user)
             if database.child("users").child(user).child("pulls").get().val():
                 user_data = database.child("users").child(user).child("pulls").get().val()
                 # print(user_data)
@@ -76,7 +76,6 @@ class pulladd(commands.Cog):
                     # print("what")
 
 
-            print("************")
         
 
     @loopadd.before_loop

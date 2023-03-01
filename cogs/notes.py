@@ -12,6 +12,7 @@ from urllib.request import Request, urlopen
 import time
 import json
 from collections import OrderedDict
+import sys
 
 TOKEN = os.getenv('TOKEN')
 
@@ -177,17 +178,21 @@ class notesClass(commands.Cog):
                         character_id_ui_front = character_id_ui.replace('Side_', '')
                         character_id_ui_url = f"https://enka.network/ui/{character_id_ui_front}.png"
                     except Exception as e:
-                        print(e)
+                        print(f'001 {e}')
                         output = None
-                        return
+                        
 
                     try:
                         signature = f"\"{output['playerInfo']['signature']}\""
-                    except:
-                        signature = "None"
-
+                    except Exception as e:
+                        print(f'0002 {e}')
+                        signature = None
+                    if output != None:
+                        player_name = output['playerInfo']['nickname']
+                    else:
+                        player_name = ctx.author.name
                     embed = discord.Embed(
-                        title=f"{output['playerInfo']['nickname']}'s Live Notes",
+                        title=f"{player_name}'s Live Notes",
                         color=ctx.author.color,
                         description=f"<:resin:950411358569136178> {notes.current_resin}/{notes.max_resin} \n **Time until capped:** {resin_remaining_time} \n<:transformer:967334141681090582> {transformer}\n<:Item_Realm_Currency:950601442740301894> {notes.current_realm_currency}/{notes.max_realm_currency} \n **Expeditions:** {len(notes.expeditions)}/{notes.max_expeditions} \n <:Icon_Commission:950603084701253642> {notes.completed_commissions}/4 \n **Claimed Guild Rewards:** {notes.claimed_commission_reward} \n **Remaining weekly boss discounts:** {notes.remaining_resin_discounts}\n<:blank:1036569081345757224>"
                     )
@@ -208,7 +213,7 @@ class notesClass(commands.Cog):
                         value=f"**Days Active:** {genshin_stats.stats.days_active}\n**Characters:**{genshin_stats.stats.characters}\n<:anemoculus:1037646266185818152> {genshin_stats.stats.anemoculi} <:geoculus:1037646330895552552> {genshin_stats.stats.geoculi} <:electroculus:1037646373618733138> {genshin_stats.stats.electroculi} <:dendroculus:1037646414689345537> {genshin_stats.stats.dendroculi}\n<:common_chest:1037649653145030697> {genshin_stats.stats.common_chests} <:exquisite_chest:1037649650645217341> {genshin_stats.stats.exquisite_chests} <:precious_chest:1037649648602591362>  {genshin_stats.stats.precious_chests}\n<:Luxurious_chest:1037649646677401660>  {genshin_stats.stats.luxurious_chests} <:remarkable_chest:1037649644748029994> {genshin_stats.stats.remarkable_chests} <:waypoint:1037650848349683782> {genshin_stats.stats.unlocked_waypoints} <:domain:1037650846277709854> {genshin_stats.stats.unlocked_domains}\n**Oculus Ranking:** #{oculi_rank} out of {oculi_lb_length}\n**Chest Ranking:** #{chest_rank} out of {oculi_lb_length}",
                         inline=True)
 
-                    embed.add_field(name="<:WL:1036184269950820422> **New!**", value="- Set a reminder when your resin reaches a certain amount with `.rr <target amount>`\n - Proof of concept: CV Leaderboard (`.cvlb <top #>`)", inline=False)
+                    embed.add_field(name="<:WL:1036184269950820422> **Note**", value="Genshin API changed.\nPlease expect some parts\nto be hidden. It will take a few\ndays for the API to be fixed.", inline=False)
                     
                     if not database.child("boon").child("notes").child("users").child(ctx.author.id).child("settings").get().val():
                         if not database.child("boon").child("notes").child("reminders").child(ctx.author.id).get().val():
@@ -235,7 +240,10 @@ class notesClass(commands.Cog):
                 elif not database.child("boon").child("notes").child("users").child(ctx.author.id).get().val():
                     await ctx.reply("Your Discord ID is not linked to a Boon notes account. Please register using </register:1056894402548736060>")
             except Exception as e:
-                print(e)
+                print(f'003 {e}')
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, fname, exc_tb.tb_lineno)
                 await ctx.reply(f"An error occured. Please ping tofu.\n`{e}`")
 
             ##### Update oculi index #####
@@ -305,7 +313,7 @@ class notesClass(commands.Cog):
                         character_id_ui_front = character_id_ui.replace('Side_', '')
                         character_id_ui_url = f"https://enka.network/ui/{character_id_ui_front}.png"
                     except Exception as e:
-                        print(e)
+                        print(f'004 {e}')
                         output = None
 
                     try:
@@ -352,7 +360,7 @@ class notesClass(commands.Cog):
                     embed = discord.Embed()
                     await ctx.reply("This alt account is not found. You have no alt accounts registered.")
             except Exception as e:
-                print(e)
+                print(f'005 {e}')
                 await ctx.reply(f"An error occured. Please ping tofu.\n`{e}`")
 
 
@@ -399,6 +407,7 @@ class notesClass(commands.Cog):
                 await ctx.reply("Your Discord ID is not linked to a Boon notes account. Please register using </register:1056894402548736060>")
 
         except Exception as e:
+            print(f'006 {e}')
             await ctx.reply(f"An error occured. Please ping tofu.\n`{e}`")
         
 async def setup(bot):
