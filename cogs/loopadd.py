@@ -76,6 +76,7 @@ class pulladd(commands.Cog):
                     # print("what")
 
 
+            # print("************")
         
 
     @loopadd.before_loop

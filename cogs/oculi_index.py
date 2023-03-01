@@ -117,7 +117,7 @@ class oculiUpdate(commands.Cog):
                 # print(user, data)
                 database.child("boon").child("notes").child("lb").child(user).update(data)
                 time.sleep(0.5)
-                print(f"{uid}")
+                # print(f"{uid}")
             except Exception as e:
                 print(e)
         

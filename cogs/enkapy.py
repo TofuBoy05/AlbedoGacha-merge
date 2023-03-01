@@ -85,7 +85,7 @@ class enkapy(commands.Cog):
                 users = database.child('boon').child('notes').child('users').get().val()
                 for user in users:
                     uid = users[user]['uid']
-                    print(uid)
+                    # print(uid)
                     data = await enclnt.fetch_user_by_uid(uid)
                     for character_raw in data.characters:
                         record = {character_raw.name:{'level': character_raw.level}}
