@@ -127,7 +127,7 @@ class oculiUpdate(commands.Cog):
                 lb = {}
 
                 for user in pt_data:
-                    print(user)
+                    # print(user)
                     try:
                         username = await self.bot.fetch_user(user)
                         username = str(username)[:-5]
