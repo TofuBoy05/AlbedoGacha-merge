@@ -95,6 +95,7 @@ class giveawayClass(commands.Cog):
     @commands.command()
     async def rollwelkin(self,ctx):
         try:
+            await ctx.send(f"Rolling...")
             participants = database.child('giveaway').shallow().get().val()
             length = len(participants)
             random_number = random.randint(0, length) - 1
