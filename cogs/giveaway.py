@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import pyrebase
 from humanfriendly import format_timespan
 import random
+import asyncio
 
 load_dotenv()
 
@@ -98,7 +99,27 @@ class giveawayClass(commands.Cog):
             length = len(participants)
             random_number = random.randint(0, length) - 1
             chosen = list(participants)[random_number]
-            await ctx.reply(f"The winner is: <@{chosen}>")
+            username = await self.bot.fetch_user(chosen)
+            await ctx.send(f"Got {username} from <#1084026982490194011>")
+            form_submissions = [559982927572762634, 704335090100207656, 460356321024278529, 460356321024278529, 615060862570594318, 552267249487183883, 951918928672718961, 910432700421259274, 1023036771266727977, 610693601537687553, 911914336988037130, 941659785672146975, 614327963126857748, 842721859765796867, 757060009833267362, 734655356621422643, 715641172550483988, 760400724596883507]
+            random_form = random.randint(0, len(form_submissions)) - 1
+            username_form = await self.bot.fetch_user(form_submissions[random_form])
+            await ctx.send(f"Got {username_form} from <#1084016282250268742>")
+            await asyncio.sleep(1)
+            winners = [1, 2]
+            chance = [49, 51]
+            final_winner = random.choices(winners,chance,k=1)
+            print(final_winner)
+            if final_winner[0] == 1:
+                winner = chosen
+                user = username
+                loser = username_form
+            elif final_winner[0] == 2:
+                winner = form_submissions[random_form]
+                user = username_form
+                loser = username
+            embed = discord.Embed(color=3092790, title="Winner", description=f"🎉The final winner is {user}🎉\n\nPlease claim your prize within a day, or the prize will go to {loser}\n\nTo claim your prize, just DM Tofu Boy or send a message in general chat. Your prize will be sent via CodaShop.")
+            await ctx.send(f"<@{winner}>", embed=embed)
         except Exception as e:
             print(e)
         
